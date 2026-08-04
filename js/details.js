@@ -12,7 +12,7 @@ if (guardStep("details")) {
   const form = document.getElementById("details-form");
   const nameInput = document.getElementById("name");
   const emailInput = document.getElementById("email");
-  const honeypotInput = document.getElementById("company");
+  const honeypotInput = document.getElementById("hp-check");
 
   const order = readOrder();
 

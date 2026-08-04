@@ -75,10 +75,16 @@
             <p class="field__error" id="email-error" aria-live="polite"></p>
           </div>
 
-          <!-- Spam trap: real people never see this, bots fill it in. -->
+          <!-- Spam trap: real people never see this, bots fill it in.
+               The name is deliberately meaningless. Called "company" with a
+               matching label, Chrome recognised it as the organisation field
+               and autofilled it from the saved profile — hidden or not, and
+               regardless of autocomplete="off" — which made every order from
+               that browser look like spam to the backend. Do not give this
+               field a name any autofill heuristic knows. -->
           <div class="honeypot" aria-hidden="true">
-            <label for="company">Company</label>
-            <input id="company" name="company" type="text" tabindex="-1" autocomplete="off">
+            <label for="hp-check">Leave this field empty</label>
+            <input id="hp-check" name="hp-check" type="text" tabindex="-1" autocomplete="off">
           </div>
 
           <p class="privacy-note" style="margin-top:1.25rem">
