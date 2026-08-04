@@ -41,15 +41,36 @@ into `TIKKIE_URL` in [`js/config.js`](js/config.js).
 
 ### 3. Put it online with GitHub Pages
 
-```bash
-git init && git add -A && git commit -m "One Party Many Reasons Website" && git branch -M main
+> **Windows PowerShell 5.1 does not support `&&`** — it is a parser error, not a git problem. Run
+> the commands one per line, as below. (Git Bash and PowerShell 7+ do support `&&`.)
+
+```powershell
+git init
+git add -A
+git commit -m "One Party Many Reasons Website"
+git branch -M main
 ```
 
-Create a new **public** repository on github.com (Pages is free only for public repos), then:
+Create a new **public** repository on github.com (Pages is free only for public repos). **Leave
+"Add a README file" unticked** — this project already has one, and a README on the remote creates a
+second, unrelated root commit that git will refuse to merge with yours.
 
-```bash
-git remote add origin https://github.com/m1das13/One_Party_Many_Reasons-website.git && git push -u origin main
+```powershell
+git remote add origin https://github.com/m1das13/One_Party_Many_Reasons-website.git
+git push -u origin main
 ```
+
+> Already ticked the README box and got `! [rejected] main -> main (fetch first)`? Replay your work
+> on top of GitHub's commit, keeping your own README:
+>
+> ```powershell
+> git fetch origin
+> git rebase origin/main
+> git checkout main -- README.md
+> git add README.md
+> git rebase --continue
+> git push -u origin main
+> ```
 
 
 
@@ -58,8 +79,10 @@ About a minute later the site is live at `https://m1das13.github.io/One_Party_Ma
 
 Every later change is just:
 
-```bash
-git add -A && git commit -m "Update times" && git push
+```powershell
+git add -A
+git commit -m "Update times"
+git push
 ```
 
 Pages redeploys itself. A custom domain can be added any time under Settings → Pages without
