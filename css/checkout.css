@@ -1,0 +1,470 @@
+/* =========================================================================
+   Checkout pages — tickets / details / payment
+   ========================================================================= */
+
+.checkout {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+}
+
+.checkout__body {
+  flex: 1;
+  padding-bottom: clamp(1.5rem, 5vh, 3rem);
+}
+
+/* ---------- Header: back link + fuel-gauge progress ---------- */
+.checkout__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-block: clamp(1rem, 3vh, 1.75rem);
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding-right: 0.5rem;
+  color: var(--chrome);
+  text-decoration: none;
+  font-size: var(--fs-small);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.back-link:hover { color: #fff; }
+
+/* The gauge: E ——— F with a needle that swings per step. */
+.gauge {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.gauge__dial { width: 74px; height: 42px; overflow: visible; }
+
+.gauge__arc {
+  fill: none;
+  stroke: rgba(216, 216, 224, 0.22);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.gauge__fill {
+  fill: none;
+  stroke: var(--pink);
+  stroke-width: 3;
+  stroke-linecap: round;
+  /* Starts empty; setGauge() in order.js fills it to the current step. */
+  stroke-dasharray: 0 400;
+  filter: drop-shadow(0 0 5px var(--pink));
+  transition: stroke-dashoffset 0.5s ease;
+}
+
+.gauge__needle {
+  stroke: #fff;
+  stroke-width: 2;
+  stroke-linecap: round;
+  transform-origin: 40px 38px;
+  transition: rotate 0.5s cubic-bezier(0.34, 1.3, 0.64, 1);
+}
+
+.gauge__letter {
+  fill: var(--muted);
+  font-size: 9px;
+  font-family: var(--font-body);
+  font-weight: 700;
+}
+
+.gauge__label {
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+@media (max-width: 420px) {
+  .gauge__label { display: none; }
+}
+
+/* ---------- Step heading ---------- */
+.step-head {
+  margin-bottom: clamp(1.5rem, 5vw, 2.25rem);
+  display: grid;
+  gap: 0.5rem;
+}
+
+.step-head__title {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  font-size: clamp(1.9rem, 7vw, 3.25rem);
+  line-height: 0.95;
+}
+
+/* ---------- Card layout ---------- */
+.checkout__grid {
+  display: grid;
+  gap: clamp(1rem, 3vw, 1.75rem);
+  align-items: start;
+}
+
+@media (min-width: 900px) {
+  .checkout__grid { grid-template-columns: 1.4fr 1fr; }
+}
+
+/* A single centred column, for a step that is only an overview (payment). */
+.checkout__single {
+  width: 100%;
+  max-width: 560px;
+  margin-inline: auto;
+}
+
+.field-block + .field-block {
+  margin-top: clamp(1.5rem, 4vw, 2rem);
+  padding-top: clamp(1.5rem, 4vw, 2rem);
+  border-top: 1px solid rgba(216, 216, 224, 0.12);
+}
+
+.field-block__label {
+  display: block;
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  font-size: clamp(1.05rem, 3.2vw, 1.3rem);
+  margin-bottom: 0.35rem;
+}
+
+.field-block__hint {
+  color: var(--muted);
+  font-size: var(--fs-small);
+  margin-bottom: 1.1rem;
+}
+
+/* ---------- Quantity: the pump counter ---------- */
+.counter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: clamp(0.75rem, 3vw, 1.5rem);
+  padding: 0.6rem;
+  border-radius: var(--radius);
+  background: #08040d;
+  border: 1px solid rgba(216, 216, 224, 0.14);
+  box-shadow: inset 0 0 40px rgba(255, 46, 136, 0.12);
+}
+
+.counter__btn {
+  flex: none;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 46, 136, 0.55);
+  background: rgba(255, 46, 136, 0.1);
+  color: #fff;
+  font-size: 1.8rem;
+  line-height: 1;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+
+.counter__btn:hover:not(:disabled) {
+  background: rgba(255, 46, 136, 0.26);
+  box-shadow: var(--glow-soft);
+}
+
+.counter__btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+.counter__readout {
+  text-align: center;
+  line-height: 1;
+}
+
+.counter__value {
+  display: block;
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 12vw, 3.5rem);
+  color: #fff6fb;
+  text-shadow: 0 0 10px var(--pink), 0 0 34px rgba(255, 46, 136, 0.7);
+  font-variant-numeric: tabular-nums;
+}
+
+.counter__unit {
+  display: block;
+  margin-top: 0.4rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ---------- Donation chips ---------- */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.chip {
+  min-height: 48px;
+  padding: 0.6rem 1.2rem;
+  border-radius: 999px;
+  border: 1px solid rgba(216, 216, 224, 0.28);
+  background: rgba(216, 216, 224, 0.05);
+  color: var(--paper);
+  font-weight: 600;
+  cursor: pointer;
+  font-variant-numeric: tabular-nums;
+  transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.chip:hover { border-color: rgba(255, 176, 32, 0.6); }
+
+.chip[aria-pressed="true"] {
+  border-color: var(--amber);
+  background: rgba(255, 176, 32, 0.16);
+  color: #fff;
+  box-shadow: 0 0 18px rgba(255, 176, 32, 0.35);
+}
+
+/* ---------- Inputs ---------- */
+.input-wrap { position: relative; }
+
+.input {
+  width: 100%;
+  min-height: 56px;
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius);
+  border: 1px solid rgba(216, 216, 224, 0.24);
+  background: rgba(8, 4, 13, 0.75);
+  color: #fff;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.input::placeholder { color: rgba(163, 147, 175, 0.7); }
+
+.input:focus {
+  border-color: var(--pink);
+  box-shadow: 0 0 0 3px rgba(255, 46, 136, 0.18);
+  outline: none;
+}
+
+.input--euro { padding-left: 2.4rem; }
+
+.input-prefix {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  translate: 0 -50%;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.input[aria-invalid="true"] { border-color: var(--danger); }
+
+.field { display: grid; gap: 0.45rem; }
+
+.field + .field { margin-top: 1.25rem; }
+
+.field__label {
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--chrome);
+  font-weight: 700;
+}
+
+.field__error {
+  color: var(--danger);
+  font-size: var(--fs-small);
+  min-height: 1.2em;
+}
+
+/* ---------- Receipt / summary ---------- */
+.receipt {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.receipt__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.receipt__row span:first-child { color: var(--muted); }
+
+.receipt__row--total {
+  padding-top: 0.85rem;
+  border-top: 1px solid rgba(216, 216, 224, 0.18);
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  font-size: clamp(1.1rem, 3.5vw, 1.4rem);
+}
+
+.receipt__row--total span:first-child { color: var(--paper); }
+
+.receipt__total-amount {
+  color: #fff6fb;
+  text-shadow: 0 0 10px var(--pink), 0 0 30px rgba(255, 46, 136, 0.6);
+}
+
+/* ---------- Notices ---------- */
+/* Block, not flex: these hold a sentence with an inline <span> in it (the
+   guest's name), and as a flex container each run of text either side of that
+   span becomes its own item with the gap wedged between them — "Almost there,
+   ⎵Midas⎵. One more tap". Normal inline flow keeps the sentence intact. */
+.notice {
+  display: none;
+  padding: 0.9rem 1.1rem;
+  border-radius: var(--radius);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  border: 1px solid transparent;
+}
+
+.notice.is-visible { display: block; }
+
+.notice--error {
+  border-color: rgba(255, 90, 90, 0.5);
+  background: rgba(255, 90, 90, 0.12);
+  color: #ffd2d2;
+}
+
+.notice--info {
+  border-color: rgba(255, 176, 32, 0.4);
+  background: rgba(255, 176, 32, 0.1);
+  color: #ffe6b8;
+}
+
+.notice--good {
+  border-color: rgba(123, 77, 255, 0.5);
+  background: rgba(123, 77, 255, 0.14);
+  color: #e2d8ff;
+}
+
+/* ---------- "With your ticket you..." intro ---------- */
+.ticket-intro {
+  margin-bottom: clamp(1rem, 3vw, 1.75rem);
+}
+
+.perks {
+  list-style: none;
+  margin: 0.9rem 0 1.25rem;
+  padding: 0;
+  display: grid;
+  gap: 0.7rem;
+}
+
+/* The tick is positioned rather than laid out as a grid/flex track on purpose.
+   In a grid container every child element becomes its own grid item, so a line
+   like "Donate to <a>War Child</a>" would put the link in a second row — the
+   sentence visibly breaks apart. Keeping the list item in normal inline flow
+   lets the text wrap as one sentence. */
+.perks li {
+  position: relative;
+  padding-left: 1.75em;
+  font-size: 1.02rem;
+}
+
+.perks li::before {
+  content: "\2713";
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--pink);
+  font-weight: 700;
+  text-shadow: 0 0 12px rgba(255, 46, 136, 0.7);
+}
+
+.link-accent {
+  color: var(--magenta);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  transition: color 0.2s ease;
+}
+
+.link-accent:hover { color: #fff; }
+
+/* ---------- Sticky action bar ---------- */
+.action-bar {
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  margin-top: auto;
+  padding-block: 0.85rem calc(0.85rem + env(safe-area-inset-bottom, 0px));
+  background: linear-gradient(180deg, rgba(11, 7, 17, 0.55), rgba(11, 7, 17, 0.96) 45%);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid rgba(216, 216, 224, 0.14);
+}
+
+.action-bar__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.action-bar__total {
+  display: grid;
+  gap: 0.1rem;
+  line-height: 1.1;
+}
+
+.action-bar__total .label {
+  font-size: 0.65rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.action-bar__total .amount {
+  font-family: var(--font-display);
+  font-size: clamp(1.3rem, 5vw, 1.75rem);
+  font-variant-numeric: tabular-nums;
+}
+
+/* "Continue and pay" is the longest label in the flow; without this it wraps
+   to two lines on a phone and the button ends up half again as tall as every
+   other button in the checkout. */
+.action-bar .btn {
+  flex: 1 1 auto;
+  max-width: 340px;
+  white-space: nowrap;
+}
+
+@media (max-width: 420px) {
+  .action-bar .btn {
+    padding-inline: 1.15rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (min-width: 600px) {
+  .action-bar .btn { flex: 0 0 auto; min-width: 260px; }
+}
+
+/* ---------- Misc ---------- */
+.privacy-note {
+  color: var(--muted);
+  font-size: var(--fs-small);
+  line-height: 1.5;
+}
+
+.noscript-warning {
+  margin-block: 1rem;
+  padding: 1rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--danger);
+  background: rgba(255, 90, 90, 0.12);
+}
+
+.is-busy { cursor: progress; }

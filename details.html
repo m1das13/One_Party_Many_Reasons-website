@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Your details — One Party. Many Reasons.</title>
+<meta name="description" content="Leave your name and email so we can reach you about the party.">
+<meta name="theme-color" content="#0b0711">
+<meta name="robots" content="noindex">
+
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="css/theme.css">
+<link rel="stylesheet" href="css/checkout.css">
+</head>
+
+<body>
+<div class="atmosphere" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+<div class="scanlines" aria-hidden="true"></div>
+
+<div class="page checkout">
+
+  <div class="wrap checkout__header">
+    <a class="back-link" href="tickets.html"><span aria-hidden="true">&larr;</span> Back</a>
+
+    <div class="gauge">
+      <svg class="gauge__dial" viewBox="0 0 80 46" role="img" aria-label="Step 2 of 3">
+        <path class="gauge__arc"  d="M14 23 A30 30 0 0 1 66 23"/>
+        <path class="gauge__fill" d="M14 23 A30 30 0 0 1 66 23"/>
+        <text class="gauge__letter" x="4"  y="35">E</text>
+        <text class="gauge__letter" x="70" y="35">F</text>
+        <line class="gauge__needle" x1="40" y1="38" x2="40" y2="14"/>
+        <circle cx="40" cy="38" r="2.6" fill="#fff"/>
+      </svg>
+      <span class="gauge__label">Step 2 of 3</span>
+    </div>
+  </div>
+
+  <main class="wrap checkout__body">
+    <div class="step-head">
+      <p class="eyebrow">Step 2 &mdash; who's coming</p>
+      <h1 class="step-head__title">Your details</h1>
+    </div>
+
+    <noscript>
+      <p class="noscript-warning">
+        This page needs JavaScript to save your order. Please switch it on, or send us a
+        message and we will put you on the list by hand.
+      </p>
+    </noscript>
+
+    <form id="details-form" class="checkout__grid" novalidate>
+
+      <div class="panel">
+        <div class="field-block">
+          <span class="field-block__label">Who should we put on the list?</span>
+          <p class="field-block__hint">
+            One name and one email is enough, even if you are bringing others along.
+          </p>
+
+          <div class="field">
+            <label class="field__label" for="name">Name</label>
+            <input class="input" id="name" name="name" type="text" autocomplete="name"
+                   maxlength="100" placeholder="Jane Jansen" required>
+            <p class="field__error" id="name-error" aria-live="polite"></p>
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="email">Email</label>
+            <input class="input" id="email" name="email" type="email" autocomplete="email"
+                   maxlength="150" placeholder="jane@example.com" required>
+            <p class="field__error" id="email-error" aria-live="polite"></p>
+          </div>
+
+          <!-- Spam trap: real people never see this, bots fill it in. -->
+          <div class="honeypot" aria-hidden="true">
+            <label for="company">Company</label>
+            <input id="company" name="company" type="text" tabindex="-1" autocomplete="off">
+          </div>
+
+          <p class="privacy-note" style="margin-top:1.25rem">
+            We keep your name and email in a private spreadsheet, use it only to reach you about
+            this party, and delete it afterwards. No newsletters, nothing shared with anyone else.
+          </p>
+        </div>
+
+        <p class="notice notice--error" id="form-error" role="alert"></p>
+      </div>
+
+      <aside class="panel" aria-label="Order summary">
+        <div class="receipt">
+          <div class="receipt__row">
+            <span id="receipt-tickets-label">Tickets</span>
+            <span id="receipt-tickets">&euro;10.00</span>
+          </div>
+          <div class="receipt__row">
+            <span>Donation</span>
+            <span id="receipt-donation">&euro;0.00</span>
+          </div>
+          <div class="receipt__row receipt__row--total">
+            <span>Total</span>
+            <span class="receipt__total-amount" id="receipt-total">&euro;10.00</span>
+          </div>
+        </div>
+        <p class="privacy-note" style="margin-top:1rem">
+          <a href="tickets.html" style="color:var(--magenta)">Change your order</a>
+        </p>
+      </aside>
+
+    </form>
+  </main>
+
+  <div class="action-bar">
+    <div class="wrap action-bar__inner">
+      <div class="action-bar__total">
+        <span class="label">Total</span>
+        <span class="amount" id="bar-total">&euro;10.00</span>
+      </div>
+      <button class="btn" type="submit" form="details-form" id="continue-btn">
+        <span id="continue-label">Continue</span> <span aria-hidden="true">&rarr;</span>
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<script type="module" src="js/details.js"></script>
+</body>
+</html>

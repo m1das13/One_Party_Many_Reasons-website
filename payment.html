@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Payment — One Party. Many Reasons.</title>
+<meta name="description" content="Pay for your tickets with Tikkie.">
+<meta name="theme-color" content="#0b0711">
+<meta name="robots" content="noindex">
+
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="css/theme.css">
+<link rel="stylesheet" href="css/checkout.css">
+</head>
+
+<body>
+<div class="atmosphere" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+<div class="scanlines" aria-hidden="true"></div>
+
+<div class="page checkout">
+
+  <div class="wrap checkout__header">
+    <a class="back-link" href="details.html"><span aria-hidden="true">&larr;</span> Back</a>
+
+    <div class="gauge">
+      <svg class="gauge__dial" viewBox="0 0 80 46" role="img" aria-label="Step 3 of 3">
+        <path class="gauge__arc"  d="M14 23 A30 30 0 0 1 66 23"/>
+        <path class="gauge__fill" d="M14 23 A30 30 0 0 1 66 23"/>
+        <text class="gauge__letter" x="4"  y="35">E</text>
+        <text class="gauge__letter" x="70" y="35">F</text>
+        <line class="gauge__needle" x1="40" y1="38" x2="40" y2="14"/>
+        <circle cx="40" cy="38" r="2.6" fill="#fff"/>
+      </svg>
+      <span class="gauge__label">Step 3 of 3</span>
+    </div>
+  </div>
+
+  <main class="wrap checkout__body">
+    <div class="step-head">
+      <p class="eyebrow">Step 3 &mdash; the last bit</p>
+      <h1 class="step-head__title">Payment</h1>
+    </div>
+
+    <p class="notice notice--good is-visible">
+      Almost there, <span id="guest-name">friend</span>. One more tap and you are done.
+    </p>
+
+    <div class="checkout__single" style="margin-top:1.25rem">
+
+      <section class="panel" aria-label="Order summary">
+        <div class="receipt">
+          <div class="receipt__row">
+            <span id="receipt-tickets-label">Tickets</span>
+            <span id="receipt-tickets">&euro;10.00</span>
+          </div>
+          <div class="receipt__row">
+            <span>Donation</span>
+            <span id="receipt-donation">&euro;0.00</span>
+          </div>
+          <div class="receipt__row receipt__row--total">
+            <span>Total</span>
+            <span class="receipt__total-amount" id="receipt-total">&euro;10.00</span>
+          </div>
+        </div>
+
+        <hr class="rule" style="margin-block:1.25rem">
+
+        <div class="receipt">
+          <div class="receipt__row"><span>Name</span><span id="summary-name">&mdash;</span></div>
+          <div class="receipt__row"><span>Email</span><span id="summary-email">&mdash;</span></div>
+        </div>
+      </section>
+
+      <p class="notice notice--error" id="pay-error" role="alert" style="margin-top:1.25rem"></p>
+
+      <p class="notice notice--info is-visible" style="margin-top:1.25rem">
+        Paid in a different way, or something went wrong? Just send us a message.
+      </p>
+
+    </div>
+
+  </main>
+
+  <div class="action-bar">
+    <div class="wrap action-bar__inner">
+      <div class="action-bar__total">
+        <span class="label">Total</span>
+        <span class="amount" id="bar-total">&euro;10.00</span>
+      </div>
+      <button class="btn btn--pulse" id="pay-btn" type="button">
+        <span id="pay-label">Continue and pay</span>
+        <span aria-hidden="true">&rarr;</span>
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<script type="module" src="js/payment.js"></script>
+</body>
+</html>

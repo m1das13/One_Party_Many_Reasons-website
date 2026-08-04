@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>One Party. Many Reasons. — De Roze Tanker, Amsterdam</title>
+<meta name="description" content="A band, a DJ and a converted petrol station. One Party. Many Reasons. — De Roze Tanker Amsterdam, Saturday 26 September 2026.">
+<meta name="theme-color" content="#0b0711">
+
+<!-- Link preview (WhatsApp, iMessage, Signal) -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="One Party. Many Reasons. — De Roze Tanker, Amsterdam">
+<meta property="og:description" content="A band, a DJ and a converted petrol station. Saturday 26 September 2026.">
+
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="css/theme.css">
+<link rel="stylesheet" href="css/home.css">
+</head>
+
+<body>
+<div class="atmosphere" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+<div class="scanlines" aria-hidden="true"></div>
+
+<div class="page">
+
+  <!-- ================= HERO ================= -->
+  <header class="hero">
+    <div class="wrap hero__top">
+      <!-- PLACEHOLDER: date -->
+      <span class="eyebrow">Sat 26 Sept 2026</span>
+      <span class="dot" aria-hidden="true">&bull;</span>
+      <span class="eyebrow">De Roze Tanker</span>
+      <span class="dot" aria-hidden="true">&bull;</span>
+      <span class="eyebrow">Amsterdam</span>
+    </div>
+
+    <div class="wrap hero__main">
+      <!-- Party name. "Party" and "Reasons" are pink (.neon); the rest is
+           purple (.line--alt). -->
+      <h1 class="display hero__title">
+        <span class="line line--alt">One <span class="neon">Part<span class="flicker">y</span>.</span></span>
+        <span class="line line--alt">Many <span class="neon">Reasons.</span></span>
+      </h1>
+
+      <a class="btn btn--pulse hero__cta" href="tickets.html">
+        Buy tickets
+        <span aria-hidden="true">&rarr;</span>
+      </a>
+    </div>
+
+    <div class="wrap hero__bottom">
+      <span class="scroll-cue" aria-hidden="true"></span>
+      <span>Scroll for the details</span>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ================= PERSONAL NOTE ================= -->
+    <section class="section" id="info">
+      <div class="wrap">
+        <!-- Wording comes from PERSONAL_NOTE in js/config.js — edit it there. -->
+        <div class="section__head">
+          <p class="eyebrow" id="note-eyebrow"></p>
+          <h2 class="section__title" id="note-title"></h2>
+        </div>
+
+        <div class="info-grid">
+          <div class="panel">
+            <div id="note-body"></div>
+            <p class="note-signoff" id="note-signoff"></p>
+          </div>
+
+          <div class="panel">
+            <ul class="fact-list">
+              <li class="fact">
+                <span class="fact__label">When</span>
+                <!-- PLACEHOLDER: date -->
+                <span class="fact__value">Sat 26 September 2026</span>
+                <span class="fact__note">Doors at 20:00</span>
+              </li>
+              <li class="fact">
+                <span class="fact__label">Where</span>
+                <span class="fact__value">De Roze Tanker</span>
+                <!-- PLACEHOLDER: street address -->
+                <span class="fact__note">Amsterdam &mdash; address to follow</span>
+              </li>
+              <li class="fact">
+                <span class="fact__label">Tickets</span>
+                <span class="fact__value">&euro;10 each</span>
+                <span class="fact__note">Max 100 people. Once they are gone, they are gone.</span>
+              </li>
+              <li class="fact">
+                <span class="fact__label">Good cause</span>
+                <span class="fact__value">Chip in if you like</span>
+                <span class="fact__note">Add an optional donation at checkout &mdash; we pass it on.</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TIMETABLE ================= -->
+    <section class="section" id="timetable">
+      <div class="wrap">
+        <div class="section__head">
+          <p class="eyebrow">Running order</p>
+          <h2 class="section__title">Pump prices</h2>
+        </div>
+
+        <!-- Rows are generated from LINEUP in js/config.js — edit them there. -->
+        <div class="board">
+          <div class="board__inner">
+            <div class="board__head">
+              <span>De Roze Tanker</span>
+              <span>26 &middot; 09 &middot; 2026</span>
+            </div>
+
+            <ul class="board__rows" id="lineup-rows"></ul>
+
+            <p class="board__foot" id="lineup-note"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= CLOSER ================= -->
+    <section class="section">
+      <div class="wrap">
+        <div class="panel closer">
+          <h2 class="closer__title display">
+            <span class="neon">See you</span><br>
+            <span class="neon--amber">at the tanker</span>
+          </h2>
+          <div class="price-strip">
+            <div>
+              <div class="price-strip__amount display">&euro;10</div>
+              <p class="eyebrow" style="margin-top:.5rem">per person</p>
+            </div>
+          </div>
+          <a class="btn btn--pulse" href="tickets.html">
+            Buy tickets
+            <span aria-hidden="true">&rarr;</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">One Party. Many Reasons. &middot; De Roze Tanker &middot; Amsterdam</div>
+  </footer>
+
+</div>
+
+<script type="module" src="js/home.js"></script>
+</body>
+</html>
