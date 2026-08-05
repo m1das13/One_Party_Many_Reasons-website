@@ -12,11 +12,25 @@ const EMPTY_ORDER = {
   donation: 0,
   name: "",
   email: "",
-  orderId: null,
   // Filled in by the hidden spam trap on the details page, carried through to
   // the payment page because that is where the order is now submitted.
   honeypot: "",
 };
+
+/**
+ * Can we store anything at all? Safari's private mode and some strict privacy
+ * settings make sessionStorage throw on write. Without this check the guest
+ * would fill in the whole form and get silently bounced back a step forever.
+ */
+export function isStorageAvailable() {
+  try {
+    sessionStorage.setItem("__probe", "1");
+    sessionStorage.removeItem("__probe");
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 /** Read the current order. Always returns a complete object. */
 export function readOrder() {
@@ -86,7 +100,7 @@ export function orderTotal(order) {
 export function guardStep(step) {
   const order = readOrder();
   const hasTickets = hasStartedOrder() && Number.isInteger(order.quantity) && order.quantity >= 1;
-  const hasIdentity = Boolean(order.name && order.email && order.orderId);
+  const hasIdentity = Boolean(order.name && order.email);
 
   if (!hasTickets) {
     window.location.replace("tickets.html");
@@ -99,29 +113,6 @@ export function guardStep(step) {
   return true;
 }
 
-/* ---------- Order reference ---------- */
-
-/**
- * A short reference like RT-K7Q4X9, generated here in the browser rather than
- * by the backend. That is what lets the payment page show the guest their
- * reference *before* anything is written to the Sheet.
- *
- * The alphabet leaves out characters people mistype (0/O, 1/I). Six of them
- * gives about a billion combinations, so two guests colliding over a hundred
- * orders is somewhere around a one-in-a-million event. Sending the same id
- * twice is harmless: the backend updates that row rather than adding another.
- */
-export function generateOrderId() {
-  const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-  const bytes = new Uint8Array(6);
-  crypto.getRandomValues(bytes);
-
-  let code = "";
-  // 256 is an exact multiple of 32, so the modulo introduces no bias.
-  for (const byte of bytes) code += alphabet[byte % alphabet.length];
-  return `RT-${code}`;
-}
-
 /* ---------- Backend ---------- */
 
 /**
@@ -131,22 +122,33 @@ export function generateOrderId() {
  * the browser skips the preflight OPTIONS call that Apps Script cannot answer.
  * The body is still JSON and is parsed as JSON on the other side.
  *
+ * No order id is sent: the backend mints one and appends a row every time, so
+ * repeat submissions become separate rows to reconcile rather than silently
+ * overwriting each other.
+ *
  * @returns {Promise<{ok: boolean, orderId?: string, reason?: string}>}
  */
-export async function submitOrder({ quantity, donation, name, email, honeypot, orderId }) {
-  const response = await fetch(APPS_SCRIPT_URL, {
+export async function submitOrder({ quantity, donation, name, email, honeypot }) {
+  // .trim() because a stray space pasted into config.js would otherwise be a
+  // very confusing outage right in the middle of the payment step.
+  const response = await fetch(APPS_SCRIPT_URL.trim(), {
     method: "POST",
     headers: { "Content-Type": "text/plain;charset=utf-8" },
-    // orderId is only present on a re-submit; it tells the backend to update
-    // that row instead of appending a second one.
-    body: JSON.stringify({ quantity, donation, name, email, honeypot, orderId }),
+    body: JSON.stringify({ quantity, donation, name, email, honeypot }),
     redirect: "follow",
   });
 
   if (!response.ok) {
     throw new Error(`Backend responded with ${response.status}`);
   }
-  return response.json();
+
+  const result = await response.json();
+  // Treat anything that is not an explicit success as a failure, so a
+  // malformed response can never be mistaken for "your order is saved".
+  if (!result || typeof result.ok !== "boolean") {
+    throw new Error("Backend returned an unrecognised response");
+  }
+  return result;
 }
 
 /* ---------- Shared UI bits ---------- */

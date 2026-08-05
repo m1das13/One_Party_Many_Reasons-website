@@ -7,12 +7,13 @@
 
 import { TIKKIE_URL, APPS_SCRIPT_URL } from "./config.js";
 import {
-  readOrder, writeOrder, renderReceipt,
+  readOrder, renderReceipt,
   setGauge, setText, setNotice, guardStep, submitOrder,
 } from "./order.js";
 
 if (guardStep("payment")) {
   const order = readOrder();
+  let inFlight = false;
 
   const payButton = document.getElementById("pay-btn");
   const payLabel = document.getElementById("pay-label");
@@ -29,6 +30,9 @@ if (guardStep("payment")) {
       "Someone else was ordering at the same moment. Give it a few seconds and tap again.",
     invalid:
       "Something in your order did not look right to us. Go back a step and check your details.",
+    error:
+      "Something went wrong saving your order, so we have not sent you to Tikkie. " +
+      "Nothing has been charged — please try again in a moment.",
   };
 
   /* ---------- Render ---------- */
@@ -40,11 +44,16 @@ if (guardStep("payment")) {
   /* ---------- Pay ---------- */
 
   payButton.addEventListener("click", async () => {
-    if (APPS_SCRIPT_URL.startsWith("PASTE_")) {
+    // Belt and braces alongside the disabled attribute: a double tap on a
+    // sluggish phone must never produce two rows for one payment.
+    if (inFlight) return;
+
+    if (APPS_SCRIPT_URL.trim().startsWith("PASTE_")) {
       setNotice(payError, "This site is not connected to its order list yet — see the README.");
       return;
     }
 
+    inFlight = true;
     setBusy(true);
     setNotice(payError, "");
 
@@ -55,28 +64,40 @@ if (guardStep("payment")) {
         name: order.name,
         email: order.email,
         honeypot: order.honeypot,
-        orderId: order.orderId,
       });
 
       if (!result.ok) {
-        setNotice(payError, ERROR_MESSAGES[result.reason] ?? ERROR_MESSAGES.invalid);
+        setNotice(payError, ERROR_MESSAGES[result.reason] ?? ERROR_MESSAGES.error);
+        inFlight = false;
         setBusy(false);
         return;
       }
 
-      // Normally the same id we sent. Keep whatever the Sheet actually used.
-      writeOrder({ orderId: result.orderId });
-
-      // Same tab on purpose: opening a new one after an await gets caught by
-      // pop-up blockers, and there is nothing left to do on this page.
+      // Saved. Same tab on purpose: opening a new one after an await gets
+      // caught by pop-up blockers, and there is nothing left to do here.
       window.location.href = TIKKIE_URL;
     } catch {
       setNotice(
         payError,
         "We could not save your order just now, so we have not sent you to Tikkie. " +
-        "Check your connection and tap again.",
+        "Nothing has been charged — check your connection and tap again.",
       );
+      inFlight = false;
       setBusy(false);
+    }
+  });
+
+  /**
+   * Coming back from Tikkie with the browser's Back button restores this page
+   * from the back/forward cache exactly as it was left — button disabled and
+   * still reading "Saving…". Without this the guest returns to a dead button
+   * and cannot pay again. `persisted` is true only for a bfcache restore.
+   */
+  window.addEventListener("pageshow", (event) => {
+    if (event.persisted) {
+      inFlight = false;
+      setBusy(false);
+      setNotice(payError, "");
     }
   });
 

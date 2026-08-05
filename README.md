@@ -121,11 +121,18 @@ The `Orders` tab looks like this:
 | Timestamp | Order ID | Name | Email | Tickets | Donation | Total | Status | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 
-Every new order arrives as `reserved`. The `Status` column is yours to drive:
+**The script is append-only.** Every tap of "Continue and pay" adds one row and nothing is ever
+edited or overwritten. So a guest who pays, goes back and pays again leaves *two* rows for *two*
+bank deposits, and someone returning a week later gets a fresh row. Nothing is ever silently merged.
 
-- **`paid`** — the Tikkie came in. Purely for your own bookkeeping.
+Every new row arrives as `reserved`. The `Status` column is yours to drive:
+
+- **`paid`** — the Tikkie came in. Purely for your own bookkeeping; still counts against the 100.
 - **`cancelled`** — frees those seats immediately; the next order can take them.
-- Anything else (including `reserved`) counts against the 100.
+- **`duplicate`** — same as cancelled. Use it for the second row when someone submitted twice but
+  only paid once, so you keep the record without double-counting the seats.
+- Anything else (including `reserved`, and any typo) counts against the 100 — deliberately, so a
+  mistyped status can never quietly oversell the party.
 
 The **Order ID** (e.g. `RT-7Q4KX9`) is internal — it is no longer shown to guests, so match a Tikkie
 payment to a row by the payer's **name**, falling back to the amount. Tikkie shows you the name on
@@ -134,8 +141,24 @@ the paying bank account, which is usually enough.
 To see how many seats are left, put this in an empty cell:
 
 ```
-=100-SUMIF(H2:H,"<>cancelled",E2:E)
+=100-SUMIFS(E2:E,H2:H,"<>cancelled",H2:H,"<>duplicate")
 ```
+
+### Rotating the Tikkie link
+
+A consumer Tikkie accepts a **maximum of 30 payments** and is valid for **14 days** by default, so
+one link will not carry a hundred guests over several weeks. Expect to create a new one roughly
+every two weeks, and sooner if it nears 30 payers. To swap it in:
+
+```powershell
+git add -A
+git commit -m "New Tikkie link"
+git push
+```
+
+after editing `TIKKIE_URL` in `js/config.js`. Live within a minute. Anyone who loaded the page in
+the previous ten minutes may still get the old link from cache, so swap it *before* the old one
+expires rather than after.
 
 ---
 

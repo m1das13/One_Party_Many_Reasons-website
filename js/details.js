@@ -6,7 +6,7 @@
    the guest actually goes off to pay.
    ========================================================================= */
 
-import { readOrder, writeOrder, renderReceipt, setGauge, guardStep, generateOrderId } from "./order.js";
+import { readOrder, writeOrder, renderReceipt, setGauge, guardStep } from "./order.js";
 
 if (guardStep("details")) {
   const form = document.getElementById("details-form");
@@ -58,9 +58,6 @@ if (guardStep("details")) {
       name: nameInput.value.trim(),
       email: emailInput.value.trim(),
       honeypot: honeypotInput.value,
-      // Reuse the reference if they have already been here, so going back and
-      // forth never turns into two rows in the Sheet.
-      orderId: order.orderId ?? generateOrderId(),
     });
 
     window.location.href = "payment.html";

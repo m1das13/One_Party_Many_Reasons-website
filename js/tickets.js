@@ -3,7 +3,9 @@
    ========================================================================= */
 
 import { MAX_PER_ORDER, DONATION_PRESETS, GOOD_CAUSE, GOOD_CAUSE_URL } from "./config.js";
-import { readOrder, writeOrder, formatEuro, renderReceipt, setGauge } from "./order.js";
+import {
+  readOrder, writeOrder, formatEuro, renderReceipt, setGauge, isStorageAvailable,
+} from "./order.js";
 
 const form = document.getElementById("tickets-form");
 const minusButton = document.getElementById("qty-minus");
@@ -14,6 +16,14 @@ const chipsContainer = document.getElementById("donation-chips");
 const donationInput = document.getElementById("donation-custom");
 
 let order = readOrder();
+
+/* ---------- Storage check ---------- */
+// Without storage the guest would fill in every step and be bounced back here
+// each time, with no explanation. Say so up front instead.
+if (!isStorageAvailable()) {
+  document.getElementById("storage-error").classList.add("is-visible");
+  document.getElementById("continue-btn").disabled = true;
+}
 
 /* ---------- One-off copy driven by config ---------- */
 // The good cause is named in two places on this page. Both are real links in
