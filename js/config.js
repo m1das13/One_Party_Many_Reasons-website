@@ -11,10 +11,18 @@
 export const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwYKGtbt1klbw4xnj8T2DJfzO7wp3VMUYRx0cTYlR2I3K6Vza7T61Cw9A5cnpB0t7ZRDA/exec";
 
 /**
- * Your open-amount Tikkie link. Replace the placeholder with the real one.
- * See README.md, step 3.
+ * Where "Continue and pay" sends the guest: any open-amount payment link.
+ * Swapping payment provider is these two lines and a push — nothing else in
+ * the site knows or cares which one you use. See README.md, step 2.
+ *
+ * Tikkie             14 days, max 30 payers per link, free.
+ * Rabo Betaalverzoek 2 years, unlimited payers, €0.17 per received payment,
+ *                    max €750 per payment on a reusable link.
+ *
+ * PAYMENT_PROVIDER is only the name shown to guests in error messages.
  */
-export const TIKKIE_URL = "https://tikkie.me/pay/eq43980h46kbjguil304";
+export const PAYMENT_URL = "https://tikkie.me/pay/eq43980h46kbjguil304";
+export const PAYMENT_PROVIDER = "Tikkie";
 
 /** Price of a single ticket, in euro. */
 export const TICKET_PRICE = 12;

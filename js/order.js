@@ -134,7 +134,11 @@ export async function submitOrder({ quantity, donation, name, email, honeypot })
   const response = await fetch(APPS_SCRIPT_URL.trim(), {
     method: "POST",
     headers: { "Content-Type": "text/plain;charset=utf-8" },
-    body: JSON.stringify({ quantity, donation, name, email, honeypot }),
+    // ticketPrice is sent so the backend can flag it in the sheet if the two
+    // copies of the price have drifted apart. It does not set what is charged.
+    body: JSON.stringify({
+      quantity, donation, name, email, honeypot, ticketPrice: TICKET_PRICE,
+    }),
     redirect: "follow",
   });
 

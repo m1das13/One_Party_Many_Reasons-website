@@ -1,11 +1,11 @@
 /* =========================================================================
-   Step 3 — show the total, write the order, hand off to Tikkie.
+   Step 3 — show the total, write the order, hand off to the payment provider.
 
    The row is written here rather than on the details page, so the Sheet only
    ever fills up with people who actually went through to pay.
    ========================================================================= */
 
-import { TIKKIE_URL, APPS_SCRIPT_URL } from "./config.js";
+import { PAYMENT_URL, PAYMENT_PROVIDER, APPS_SCRIPT_URL } from "./config.js";
 import {
   readOrder, renderReceipt,
   setGauge, setText, setNotice, guardStep, submitOrder,
@@ -31,7 +31,7 @@ if (guardStep("payment")) {
     invalid:
       "Something in your order did not look right to us. Go back a step and check your details.",
     error:
-      "Something went wrong saving your order, so we have not sent you to Tikkie. " +
+      `Something went wrong saving your order, so we have not sent you to ${PAYMENT_PROVIDER}. ` +
       "Nothing has been charged — please try again in a moment.",
   };
 
@@ -75,11 +75,11 @@ if (guardStep("payment")) {
 
       // Saved. Same tab on purpose: opening a new one after an await gets
       // caught by pop-up blockers, and there is nothing left to do here.
-      window.location.href = TIKKIE_URL;
+      window.location.href = PAYMENT_URL.trim();
     } catch {
       setNotice(
         payError,
-        "We could not save your order just now, so we have not sent you to Tikkie. " +
+        `We could not save your order just now, so we have not sent you to ${PAYMENT_PROVIDER}. ` +
         "Nothing has been charged — check your connection and tap again.",
       );
       inFlight = false;

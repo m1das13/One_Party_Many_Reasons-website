@@ -17,8 +17,13 @@ const SHEET_NAME = 'Orders';
 /** Hard capacity of the party. Nothing gets written past this. */
 const MAX_TICKETS = 100;
 
-/** Price per ticket, in euro. Must match TICKET_PRICE in js/config.js. */
-const TICKET_PRICE = 10;
+/**
+ * Price per ticket, in euro. Must match TICKET_PRICE in js/config.js.
+ * If the two ever drift apart, the Total column here silently disagrees with
+ * what guests actually paid — so a mismatch is written into the Notes column
+ * of the affected row rather than being left to discover during reconciliation.
+ */
+const TICKET_PRICE = 12;
 
 /** Most tickets allowed in a single order. Must match MAX_PER_ORDER in js/config.js. */
 const MAX_PER_ORDER = 10;
@@ -144,12 +149,23 @@ function validateOrder_(payload) {
   var email = String(payload.email || '').trim();
   if (email.length > 150 || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return null;
 
+  // The site tells us what it charged. We still bill from our own constant, but
+  // a disagreement means js/config.js and this file have drifted apart, which
+  // would otherwise quietly corrupt every Total in the sheet.
+  var sitePrice = Number(payload.ticketPrice);
+  var note = '';
+  if (isFinite(sitePrice) && sitePrice > 0 && sitePrice !== TICKET_PRICE) {
+    note = 'PRICE MISMATCH: site charged EUR ' + sitePrice + ' per ticket, this script assumes EUR '
+         + TICKET_PRICE + '. Update TICKET_PRICE in Code.gs and redeploy.';
+  }
+
   return {
     quantity: quantity,
     donation: donation,
     name: name,
     email: email,
     total: Math.round((quantity * TICKET_PRICE + donation) * 100) / 100,
+    note: note,
   };
 }
 
@@ -208,7 +224,7 @@ function buildRow_(order, orderId, timestamp) {
     order.donation,
     order.total,
     STATUS_RESERVED,
-    '',
+    order.note || '',
   ];
 }
 

@@ -34,10 +34,28 @@ Three things to do once, in this order.
 > Whenever you change `Code.gs` later, you must **Deploy → Manage deployments → edit → New version**
 > for the change to take effect. Editing the code alone does nothing to the live URL.
 
-### 2. Your Tikkie link
+### 2. Your payment link
 
-Create an **open-amount** Tikkie ("bedrag openlaten") in the ABN AMRO Tikkie app and paste the link
-into `TIKKIE_URL` in [`js/config.js`](js/config.js).
+Create an **open-amount** payment link and paste it into `PAYMENT_URL` in
+[`js/config.js`](js/config.js), setting `PAYMENT_PROVIDER` to its name. Two options:
+
+| | Tikkie (ABN AMRO) | Rabo Betaalverzoek |
+| --- | --- | --- |
+| Link stays valid | 14 days | **2 years** |
+| Payments per link | max 30 | **unlimited** |
+| Open amount | yes ("bedrag openlaten") | yes ("vrije bedragkeuze") |
+| Max per payment | €2,500 per request | €750 on a reusable link |
+| Cost | free | €0.17 per received payment |
+| Needs | any Dutch bank account | a Rabobank account |
+
+**Rabo Betaalverzoek is the safer choice for this party.** One link covers all hundred guests for
+the whole run-up, so there is nothing to rotate and nothing to forget. Tikkie is free but its
+14-day / 30-payer ceiling means roughly four link swaps before the party — and the site cannot
+detect an expired or full link, so a guest would get their row written and then land on a dead
+payment page.
+
+For Rabo Betaalverzoek: Rabo App → Betaalverzoek → leave the amount open, and enable **"hetzelfde
+betaalverzoek meerdere keren betalen"**. Without that setting the link is single-use.
 
 ### 3. Put it online with GitHub Pages
 
@@ -144,21 +162,22 @@ To see how many seats are left, put this in an empty cell:
 =100-SUMIFS(E2:E,H2:H,"<>cancelled",H2:H,"<>duplicate")
 ```
 
-### Rotating the Tikkie link
+### Swapping the payment link
 
-A consumer Tikkie accepts a **maximum of 30 payments** and is valid for **14 days** by default, so
-one link will not carry a hundred guests over several weeks. Expect to create a new one roughly
-every two weeks, and sooner if it nears 30 payers. To swap it in:
+Edit `PAYMENT_URL` and `PAYMENT_PROVIDER` in `js/config.js`, then:
 
 ```powershell
 git add -A
-git commit -m "New Tikkie link"
+git commit -m "New payment link"
 git push
 ```
 
-after editing `TIKKIE_URL` in `js/config.js`. Live within a minute. Anyone who loaded the page in
-the previous ten minutes may still get the old link from cache, so swap it *before* the old one
-expires rather than after.
+Live within a minute. Anyone who loaded the page in the previous ten minutes may still get the old
+link from cache, so swap *before* the old one dies rather than after.
+
+**If you stay on Tikkie** you must do this roughly every two weeks, and sooner if the link nears 30
+payers — set a calendar reminder, because the site cannot tell that a link has expired or filled up.
+On Rabo Betaalverzoek one link lasts two years and this is a one-off.
 
 ---
 
