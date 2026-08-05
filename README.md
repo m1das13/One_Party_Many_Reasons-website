@@ -36,26 +36,35 @@ Three things to do once, in this order.
 
 ### 2. Your payment link
 
-Create an **open-amount** payment link and paste it into `PAYMENT_URL` in
-[`js/config.js`](js/config.js), setting `PAYMENT_PROVIDER` to its name. Two options:
+All three candidates are already in [`js/config.js`](js/config.js) under `PAYMENT_OPTIONS`. Paste
+your link into the one you want and point `ACTIVE_PAYMENT` at it:
 
-| | Tikkie (ABN AMRO) | Rabo Betaalverzoek |
-| --- | --- | --- |
-| Link stays valid | 14 days | **2 years** |
-| Payments per link | max 30 | **unlimited** |
-| Open amount | yes ("bedrag openlaten") | yes ("vrije bedragkeuze") |
-| Max per payment | €2,500 per request | €750 on a reusable link |
-| Cost | free | €0.17 per received payment |
-| Needs | any Dutch bank account | a Rabobank account |
+```js
+export const ACTIVE_PAYMENT = "rabobank";   // "tikkie" | "rabobank" | "asn"
+```
 
-**Rabo Betaalverzoek is the safer choice for this party.** One link covers all hundred guests for
-the whole run-up, so there is nothing to rotate and nothing to forget. Tikkie is free but its
-14-day / 30-payer ceiling means roughly four link swaps before the party — and the site cannot
-detect an expired or full link, so a guest would get their row written and then land on a dead
-payment page.
+Whichever you choose, it must be an **open-amount** link — the guest types the total themselves.
 
-For Rabo Betaalverzoek: Rabo App → Betaalverzoek → leave the amount open, and enable **"hetzelfde
-betaalverzoek meerdere keren betalen"**. Without that setting the link is single-use.
+| | Tikkie (ABN AMRO) | **Rabo Betaalverzoek** | ASN / SNS / RegioBank |
+| --- | --- | --- | --- |
+| Link stays valid | 14 days | **2 years** | ~30 days |
+| Payments per link | max 30 | **unlimited** | max 30 |
+| Open amount | yes ("bedrag openlaten") | yes ("vrije bedragkeuze") | check in the app |
+| Max per payment | €2,500 per request | €750 | €750 |
+| Receiving cap | €2,500 per 24h | — | €3,000 per month |
+| Cost | free | €0.17 per received payment | free |
+| Needs | any Dutch bank account | a Rabobank account | ASN/SNS/RegioBank |
+
+**Rabo Betaalverzoek is the safest choice for this party.** One link covers all hundred guests for
+the whole run-up, so there is nothing to rotate and nothing to forget. Tikkie and ASN both stop at
+30 payments per link, which means roughly four swaps before the party — and the site cannot detect
+an expired or full link, so a guest would get their row written and then land on a dead page.
+
+For Rabo Betaalverzoek: Rabo App → Betaalverzoek → leave the amount open, and switch on
+**"hetzelfde betaalverzoek meerdere keren betalen"**. Without that setting the link is single-use.
+
+If the selected option has no link yet, the payment page says so plainly and the button stays
+disabled — no order is written and no one is sent to a dead link.
 
 ### 3. Put it online with GitHub Pages
 
@@ -164,7 +173,8 @@ To see how many seats are left, put this in an empty cell:
 
 ### Swapping the payment link
 
-Edit `PAYMENT_URL` and `PAYMENT_PROVIDER` in `js/config.js`, then:
+Edit the relevant `url` in `PAYMENT_OPTIONS` (and `ACTIVE_PAYMENT`, if you are changing provider)
+in `js/config.js`, then:
 
 ```powershell
 git add -A

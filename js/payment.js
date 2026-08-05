@@ -5,7 +5,9 @@
    ever fills up with people who actually went through to pay.
    ========================================================================= */
 
-import { PAYMENT_URL, PAYMENT_PROVIDER, APPS_SCRIPT_URL } from "./config.js";
+import {
+  PAYMENT_URL, PAYMENT_PROVIDER, IS_PAYMENT_CONFIGURED, APPS_SCRIPT_URL,
+} from "./config.js";
 import {
   readOrder, renderReceipt,
   setGauge, setText, setNotice, guardStep, submitOrder,
@@ -48,6 +50,9 @@ if (guardStep("payment")) {
     // sluggish phone must never produce two rows for one payment.
     if (inFlight) return;
 
+    // Also guarded on load, but never write an order we cannot collect on.
+    if (!IS_PAYMENT_CONFIGURED) return;
+
     if (APPS_SCRIPT_URL.trim().startsWith("PASTE_")) {
       setNotice(payError, "This site is not connected to its order list yet — see the README.");
       return;
@@ -75,7 +80,7 @@ if (guardStep("payment")) {
 
       // Saved. Same tab on purpose: opening a new one after an await gets
       // caught by pop-up blockers, and there is nothing left to do here.
-      window.location.href = PAYMENT_URL.trim();
+      window.location.href = PAYMENT_URL;
     } catch {
       setNotice(
         payError,
@@ -102,9 +107,23 @@ if (guardStep("payment")) {
   });
 
   function setBusy(isBusy) {
-    payButton.disabled = isBusy;
+    // Never re-enable a button that has nowhere to send the guest — this also
+    // covers the bfcache restore path, which calls setBusy(false).
+    payButton.disabled = isBusy || !IS_PAYMENT_CONFIGURED;
     payLabel.textContent = isBusy ? "Saving…" : "Continue and pay";
     document.body.classList.toggle("is-busy", isBusy);
+  }
+
+  // No usable payment link: say so on arrival rather than letting the guest tap
+  // a button that cannot work. Their details are already safe in this browser,
+  // and no order is written, so nothing is half-finished.
+  if (!IS_PAYMENT_CONFIGURED) {
+    setNotice(
+      payError,
+      "We cannot take payments at this moment — our payment link is being renewed. " +
+      "Nothing has been charged. Please send us a message and we will sort it out.",
+    );
+    payButton.disabled = true;
   }
 
   setGauge(3);
