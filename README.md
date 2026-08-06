@@ -31,8 +31,26 @@ Three things to do once, in this order.
 5. Copy the deployment URL. It ends in **`/exec`** — not `/dev`.
 6. Paste it into `APPS_SCRIPT_URL` in [`js/config.js`](js/config.js).
 
-> Whenever you change `Code.gs` later, you must **Deploy → Manage deployments → edit → New version**
-> for the change to take effect. Editing the code alone does nothing to the live URL.
+> Whenever you change `Code.gs` later, you must **Deploy → Manage deployments → edit (pencil) →
+> Version: New version → Deploy**. Editing the code alone does nothing to the live URL.
+>
+> ⚠️ **Do not use "New deployment" for updates.** It creates a *different* `/exec` URL and can
+> retire the old one, so `APPS_SCRIPT_URL` in `js/config.js` suddenly points at nothing. The
+> symptom is every order failing with *"We could not save your order just now"* while the endpoint
+> returns 404. If you do end up with a new URL, copy it from **Manage deployments** into
+> `js/config.js` and push.
+
+**Health check — do this first whenever orders fail.** Open the `APPS_SCRIPT_URL` value in a
+browser. A working deployment answers:
+
+```json
+{"ok":true,"service":"One Party. Many Reasons. — order intake"}
+```
+
+Anything else — a Google error page, a 404, a login prompt — means the site cannot save orders, and
+no amount of website redeploying will help. Fix the deployment or repoint the URL.
+
+The browser console on the payment page also prints the exact status and what to do about it.
 
 ### 2. Your payment link
 

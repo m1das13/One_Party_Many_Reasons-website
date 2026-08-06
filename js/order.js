@@ -143,10 +143,31 @@ export async function submitOrder({ quantity, donation, name, email, honeypot })
   });
 
   if (!response.ok) {
+    // 404 here almost always means APPS_SCRIPT_URL points at a deployment that
+    // no longer exists — typically after "New deployment" (which mints a fresh
+    // URL) was used instead of "Manage deployments -> New version". Guests only
+    // see the friendly message; this is for whoever is debugging it.
+    console.error(
+      `Order backend returned HTTP ${response.status} for ${APPS_SCRIPT_URL.trim()}\n` +
+      (response.status === 404
+        ? "That deployment is gone. Copy the current /exec URL from Apps Script " +
+          "(Deploy -> Manage deployments) into APPS_SCRIPT_URL in js/config.js."
+        : "Check the deployment is set to 'Execute as: Me' and 'Who has access: Anyone'."),
+    );
     throw new Error(`Backend responded with ${response.status}`);
   }
 
-  const result = await response.json();
+  // Not response.json(): a dead or misconfigured deployment answers with an
+  // HTML error page, and we want a clear diagnostic rather than a parse error.
+  const raw = await response.text();
+  let result;
+  try {
+    result = JSON.parse(raw);
+  } catch {
+    console.error("Order backend did not return JSON. First bytes:", raw.slice(0, 200));
+    throw new Error("Backend returned a non-JSON response");
+  }
+
   // Treat anything that is not an explicit success as a failure, so a
   // malformed response can never be mistaken for "your order is saved".
   if (!result || typeof result.ok !== "boolean") {

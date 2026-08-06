@@ -4,9 +4,19 @@
 
 /**
  * The Google Apps Script Web App URL that writes orders into your Sheet.
- * Get it from: Apps Script editor -> Deploy -> New deployment -> Web app.
- * It must end in /exec  (NOT /dev).
- * See README.md, step 1.
+ * It must end in /exec  (NOT /dev).  See README.md, step 1.
+ *
+ * To change the backend, always use Deploy -> Manage deployments -> edit (pencil)
+ * -> Version: New version. That keeps this URL working.
+ *
+ * "Deploy -> New deployment" mints a DIFFERENT URL and can retire the old one,
+ * which makes this line point at nothing: the endpoint starts returning 404 and
+ * every order fails. If that happens, copy the current Web app URL from Manage
+ * deployments and paste it here.
+ *
+ * Health check: open this URL in a browser. A working deployment answers with
+ * {"ok":true,"service":"..."}. Anything else — an error page, a 404 — means the
+ * site cannot save orders.
  */
 export const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwYKGtbt1klbw4xnj8T2DJfzO7wp3VMUYRx0cTYlR2I3K6Vza7T61Cw9A5cnpB0t7ZRDA/exec";
 
