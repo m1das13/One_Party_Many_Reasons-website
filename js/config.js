@@ -43,12 +43,12 @@ export const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwYKGtbt
  */
 export const PAYMENT_OPTIONS = {
   tikkie:   { label: "Tikkie",    url: "https://tikkie.me/pay/eq43980h46kbjguil304" },
-  rabobank: { label: "Rabobank",  url: "" },
+  rabobank: { label: "Rabobank",  url: "https://betaalverzoek.rabobank.nl/betaalverzoek/?id=I7bJieQORBy8uI7P3z0dTQ" },
   asn:      { label: "ASN Bank",  url: "" },
 };
 
 /** Pick one: "tikkie" | "rabobank" | "asn" */
-export const ACTIVE_PAYMENT = "tikkie";
+export const ACTIVE_PAYMENT = "rabobank";
 
 /* The three constants below are derived — there is nothing to edit here.
    Selecting by key rather than commenting blocks in and out is deliberate:
@@ -90,22 +90,27 @@ export const GOOD_CAUSE_URL = "https://www.warchild.nl/";
 /**
  * Your personal note on the home page. This is the only place it lives.
  *
- * paragraphs  one entry per paragraph — add or remove as many as you like
- * signoff     the name(s) at the bottom; set to "" to leave it off
- *
- * PLACEHOLDER: the words below are a stand-in. Write your own.
+ * paragraphs  one entry per paragraph - add or remove as many as you like
+ * signoff     the line at the bottom; set to "" to leave it off
  */
 export const PERSONAL_NOTE = {
   eyebrow: "From us",
-  title: "Why we're doing this",
+  title: "Huh?! A ticket website?",
   paragraphs: [
-    "We had a hard time picking one reason to throw a party, so we stopped trying. " +
-      "There is a bit of everything in this one: something to celebrate, someone to " +
-      "thank, and a room we have wanted to fill for a long time.",
-    "So come for whichever reason suits you. Stay for the band, stay longer for the DJ, " +
-      "and let us worry about the rest. We would rather have you there than have it perfect.",
+    "Let’s start with the obvious question: why are there tickets?",
+    "We’re so happy to host this party for all of you, and we’d really like to donate the " +
+      "profits from the night to War Child. Not only because our very cool friend Tamo works " +
+      "there, but also because of the crazy times we’re living in. We wanted to find a way to " +
+      "combine having a party with supporting a good cause and tickets seemed like the easiest " +
+      "way to do that.",
+    "Then there’s another question: why are you looking at such a cool and innovative website?",
+    "Well… that’s because Midas and Jayanti (mainly Midas) are nerds who spent too much " +
+      "time making this website.",
+    "Once you’ve paid for your ticket, you’ll automatically be added to the guest list. But " +
+      "if you don’t want to, or can’t, pay for a ticket, please let us know! We really " +
+      "don’t want money to be a reason for anyone not to come to our party.",
   ],
-  signoff: "",
+  signoff: "See you on the 26th of september",
 };
 
 /**

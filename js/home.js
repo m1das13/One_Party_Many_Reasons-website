@@ -3,7 +3,17 @@
    times and act names live in exactly one place.
    ========================================================================= */
 
-import { LINEUP, LINEUP_NOTE, PERSONAL_NOTE } from "./config.js";
+import { LINEUP, LINEUP_NOTE, PERSONAL_NOTE, TICKET_PRICE } from "./config.js";
+
+/* ---------- Ticket price ---------- */
+// Driven from config so the home page can never advertise a different price
+// from the one the checkout actually charges.
+const priceLabel = Number.isInteger(TICKET_PRICE)
+  ? `€${TICKET_PRICE}`
+  : `€${TICKET_PRICE.toFixed(2)}`;
+
+setText("fact-price", `${priceLabel} each`);
+setText("closer-price", priceLabel);
 
 /* ---------- Personal note ---------- */
 setText("note-eyebrow", PERSONAL_NOTE.eyebrow);
