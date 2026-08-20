@@ -125,7 +125,7 @@ export const PERSONAL_NOTE = {
  */
 export const LINEUP = [
   { name: "Doors",    note: "Unleaded — come in, say hi",         time: "20:00", accent: "doors" },
-  { name: "The band", note: "Super plus — live under the canopy", time: "21:30", accent: "band" },
+  { name: "The band", note: "Super plus — live under the canopy", time: "21:00", accent: "band" },
   { name: "The DJ",   note: "Full throttle — until close",        time: "23:00", accent: "dj" },
 ];
 
