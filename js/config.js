@@ -43,7 +43,7 @@ export const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwYKGtbt
  */
 export const PAYMENT_OPTIONS = {
   tikkie:   { label: "Tikkie",    url: "https://tikkie.me/pay/eq43980h46kbjguil304" },
-  rabobank: { label: "Rabobank",  url: "https://betaalverzoek.rabobank.nl/betaalverzoek/?id=I7bJieQORBy8uI7P3z0dTQ" },
+  rabobank: { label: "Rabobank",  url: "https://betaalverzoek.rabobank.nl/betaalverzoek/?id=aonJiu9AQsSY02BoZS0ESw" },
   asn:      { label: "ASN Bank",  url: "" },
 };
 
