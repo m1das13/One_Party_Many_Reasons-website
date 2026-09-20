@@ -3,7 +3,9 @@
    times and act names live in exactly one place.
    ========================================================================= */
 
-import { LINEUP, LINEUP_NOTE, PERSONAL_NOTE, TICKET_PRICE } from "./config.js";
+import {
+  LINEUP, LINEUP_NOTE, PERSONAL_NOTE, TICKET_PRICE, SOLD_OUT, SOLD_OUT_PAGE,
+} from "./config.js";
 
 /* ---------- Ticket price ---------- */
 // Driven from config so the home page can never advertise a different price
@@ -14,6 +16,18 @@ const priceLabel = Number.isInteger(TICKET_PRICE)
 
 setText("fact-price", `${priceLabel} each`);
 setText("closer-price", priceLabel);
+
+/* ---------- Sold out ---------- */
+// Both "Buy tickets" buttons point at tickets.html and nothing else on this
+// page does, so one selector covers the hero CTA and the closer CTA.
+if (SOLD_OUT) {
+  for (const cta of document.querySelectorAll('a[href="tickets.html"]')) {
+    cta.href = SOLD_OUT_PAGE;
+    cta.classList.remove("btn--pulse");   // a dead end should not pulse invitingly
+    cta.replaceChildren(document.createTextNode("Sold out — read more"));
+  }
+  setText("fact-tickets-note", "Sold out. The guest list is closed.");
+}
 
 /* ---------- Personal note ---------- */
 setText("note-eyebrow", PERSONAL_NOTE.eyebrow);

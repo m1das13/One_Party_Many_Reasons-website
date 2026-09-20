@@ -150,6 +150,7 @@ Everything you are likely to change is marked with `<!-- PLACEHOLDER: ... -->` i
 | Street address | `index.html`, the "Where" fact |
 | Timetable times and act names | `LINEUP` in `js/config.js` |
 | Small print under the timetable | `LINEUP_NOTE` in `js/config.js` |
+| Ticket sales open or closed | `SOLD_OUT` in `js/config.js` — see *Closing ticket sales* below |
 | Ticket price | `TICKET_PRICE` in `js/config.js` **and** `Code.gs` — keep them equal |
 | Max tickets per order | `MAX_PER_ORDER` in `js/config.js` **and** `Code.gs` — keep them equal |
 | Donation preset amounts | `DONATION_PRESETS` in `js/config.js` |
@@ -206,6 +207,40 @@ link from cache, so swap *before* the old one dies rather than after.
 **If you stay on Tikkie** you must do this roughly every two weeks, and sooner if the link nears 30
 payers — set a calendar reminder, because the site cannot tell that a link has expired or filled up.
 On Rabo Betaalverzoek one link lasts two years and this is a one-off.
+
+### Closing ticket sales
+
+When the party is full, set one line in [`js/config.js`](js/config.js):
+
+```js
+export const SOLD_OUT = true;
+```
+
+```powershell
+git add -A
+git commit -m "Close ticket sales"
+git push
+```
+
+Live within a minute. From then on:
+
+- The two **Buy tickets** buttons on the home page read *Sold out — read more* and lead to
+  `sold-out.html` instead of the checkout.
+- `tickets.html`, `details.html` and `payment.html` all send the visitor to `sold-out.html`,
+  including anyone who types one of those addresses straight into the browser.
+- `sold-out.html` says the tickets are gone and asks people to message Midas or Jayanti
+  directly. **It deliberately carries no phone number or email address** — friends already
+  have them, and anyone else cannot get a ticket. Reopening sales is the same line set back
+  to `false`.
+
+Two things this switch does *not* do, both by design:
+
+- It runs in the visitor's browser, and `js/config.js` is public. It is a closed front door,
+  not a lock. The real cap is still `MAX_TICKETS` in [`apps-script/Code.gs`](apps-script/Code.gs),
+  which is the only place a limit can actually be enforced — lower it there and redeploy if you
+  ever need a hard stop.
+- GitHub Pages caches for ten minutes, and anyone with the site already open keeps the old
+  `config.js` until they reload. Expect a small tail of orders after you push.
 
 ---
 

@@ -69,6 +69,22 @@ export const PAYMENT_URL = selectedPayment ? selectedPayment.url.trim() : "";
 /** False when the chosen option has no link yet, or the key is misspelled. */
 export const IS_PAYMENT_CONFIGURED = PAYMENT_URL.length > 0;
 
+/* ---------------------------- Ticket sales ----------------------------- */
+/**
+ * Ticket sales switch. Set to true when the party is full.
+ *
+ * With this on, the three checkout pages send the visitor straight to
+ * sold-out.html and the home page's "Buy tickets" buttons change to match.
+ *
+ * This is a front-of-house switch, not a lock: it runs in the visitor's own
+ * browser, and js/config.js is public. The real cap is MAX_TICKETS in
+ * apps-script/Code.gs, which is the only place it can actually be enforced.
+ */
+export const SOLD_OUT = false;
+
+/** Where the checkout pages send people once SOLD_OUT is on. */
+export const SOLD_OUT_PAGE = "sold-out.html";
+
 /** Price of a single ticket, in euro. */
 export const TICKET_PRICE = 12;
 

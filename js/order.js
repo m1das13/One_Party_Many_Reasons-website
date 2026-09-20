@@ -3,7 +3,7 @@
    sessionStorage (not localStorage) so a closed tab starts a fresh order.
    ========================================================================= */
 
-import { TICKET_PRICE, APPS_SCRIPT_URL } from "./config.js";
+import { TICKET_PRICE, APPS_SCRIPT_URL, SOLD_OUT, SOLD_OUT_PAGE } from "./config.js";
 
 const STORAGE_KEY = "rozetanker.order";
 
@@ -91,6 +91,25 @@ export function orderTotal(order) {
 /* ---------- Navigation guards ---------- */
 
 /**
+ * Ticket sales closed? Leave for the sold-out page.
+ *
+ * Mirrors guardStep() so both read the same way at the call site. Checked on
+ * every checkout page, so a guest who types tickets.html straight into the
+ * address bar lands on the sold-out page just like everyone else.
+ *
+ * @returns {boolean} true if the page may render
+ */
+export function guardSalesOpen() {
+  if (!SOLD_OUT) return true;
+
+  // Hide first: the navigation is queued, not instant, and no one should see a
+  // flash of a checkout step they are not allowed to use.
+  document.documentElement.hidden = true;
+  window.location.replace(SOLD_OUT_PAGE);
+  return false;
+}
+
+/**
  * Send the guest back a step if they landed here without the data that step
  * produces (deep link, refreshed after the tab was reopened, etc.).
  *
@@ -98,6 +117,9 @@ export function orderTotal(order) {
  * @returns {boolean} true if the page may render
  */
 export function guardStep(step) {
+  // Sales closed beats everything else: there is no step to go back to.
+  if (!guardSalesOpen()) return false;
+
   const order = readOrder();
   const hasTickets = hasStartedOrder() && Number.isInteger(order.quantity) && order.quantity >= 1;
   const hasIdentity = Boolean(order.name && order.email);
