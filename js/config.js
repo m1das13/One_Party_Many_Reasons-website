@@ -126,11 +126,11 @@ export const PERSONAL_NOTE = {
 export const LINEUP = [
   { name: "Doors",    note: "When the party starts",         time: "20:00", accent: "doors" },
   { name: "Scout & his band", note: "With their own songs", time: "21:00", accent: "scout" },
-  { name: "DJ Matta Pappa Soundsystem",   note: "Until close",     time: "23:00", accent: "dj" },
+  { name: "DJ Matta Pappa Soundsystem",   note: "Until close",     time: "22:30", accent: "dj" },
 ];
 
 /** Small print under the running order. Set to "" to hide the line entirely. */
-export const LINEUP_NOTE = "Times still provisional";
+export const LINEUP_NOTE = "";
 
 /* Note: the hard limit of 100 tickets is NOT set here. It lives in
    apps-script/Code.gs, where it can actually be enforced — anything in this
