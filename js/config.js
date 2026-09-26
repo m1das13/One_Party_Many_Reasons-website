@@ -80,7 +80,7 @@ export const IS_PAYMENT_CONFIGURED = PAYMENT_URL.length > 0;
  * browser, and js/config.js is public. The real cap is MAX_TICKETS in
  * apps-script/Code.gs, which is the only place it can actually be enforced.
  */
-export const SOLD_OUT = false;
+export const SOLD_OUT = true;
 
 /** Where the checkout pages send people once SOLD_OUT is on. */
 export const SOLD_OUT_PAGE = "sold-out.html";
